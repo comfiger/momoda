@@ -1,0 +1,22 @@
+<div class="left">
+	<script type="text/javascript">
+		var myMenu;
+		window.onload = function() {
+			myMenu = new SDMenu("my_menu");
+			myMenu.init();
+		};
+	</script>
+	<!--菜单开始-->
+	<div id="my_menu" class="sdmenu">
+		<?php echo F('menu/menu_'. session('role_id'));?>
+	</div>
+	<!--菜单结束-->
+</div>
+<div class="Switch"></div>
+<script type="text/javascript">
+	$(document).ready(function(e) {
+		$(".Switch").click(function(){
+			$(".left").toggle();
+		});
+	});
+</script>

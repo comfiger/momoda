@@ -1,0 +1,51 @@
+<?php 
+	$total = ceil($count/C('PAGE_SIZE'));
+	if($total > 1){ 
+?>
+<ul>
+	<li>
+		<?php $fristPage = $page-1 <= 0 ? 1 : $page-1; $lastPage = $page+1 > $total ? $page : $page+1; ?>
+		<a href="javascript:void(0);" class="nextpage" page="{$fristPage}"><span class="fa fa-chevron-left"><</span></a>
+	</li>
+	<?php if($total > 10){ ?>
+		<?php 
+			if(($page-6) > 0){
+				$starts = ($page-5);
+				$ends = ($page+5);
+			}else{
+				$starts = 1;
+				$ends = 11;
+			}
+		?>
+		<?php for($i=$starts; $i<=$ends; $i++){ ?>
+			<?php if($i <= $total){ ?>
+			<li class="<?php if($i==$page){ echo 'active';}else{ echo 'spage';} ?>"><a href="javascript:void(0);" class="nextpage" page="{$i}">{$i}</a></li>
+			<?php } ?>
+		<?php } ?>
+	<?php }else{ ?>
+		<?php for($i=1; $i<=$total; $i++){ ?>
+		<li class="<?php if($i==$page){ echo 'active';}else{ echo 'spage';} ?>"><a href="javascript:void(0);" class="nextpage" page="{$i}">{$i}</a></li>
+		<?php } ?>
+	<?php } ?>
+	<li>
+		<a href="javascript:void(0);" class="nextpage" page="{$lastPage}"><span class="fa fa-chevron-right">></span></a>
+	</li>
+</ul>
+<?php } ?>
+
+<script>
+	$(document).ready(function(){
+		$(".nextpage").on('click', function(){
+			<?php if($param){ ?>
+				var pageParam = {$param};
+			<?php }else{ ?>
+				var pageParam = {};
+			<?php } ?>
+				pageParam.page = $(this).attr('page');
+				pageParam.ajax = 1;
+			$.get("__ACTION__", pageParam, function(data){
+				$("#ajaxDiv").html('').html(data);
+			});
+		});
+	});
+</script>

@@ -1,0 +1,132 @@
+<include file="Common/header" />
+<!-- 顶部 -->     
+<div id="middle">
+    <include file="Common/menu" />
+    <div class="right" id="mainFrame">
+		<div class="right_cont">
+			<ul class="breadcrumb">当前位置：
+				<a href="javascript:void(0);">首页</a> <span class="divider">/</span>
+				<a href="javascript:void(0);">角色管理</a> <span class="divider">/</span>
+				添加角色
+			</ul>
+			<div class="title_right"><strong>基本信息</strong></div>
+			<form action="" method="POST" id="addfrom">
+				<div style="width: 900px; margin:auto">
+					<table class="table table-bordered">
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">角色名称：</td>
+							<td>
+								<input type="hidden" name="roleid" id="roleid" value="{$roleinfo['role_id']}" />
+								<input type="text" name="rolename" id="rolename" class="span1-3" value="{$roleinfo['role_name']}" />
+								<span class="rolelabel"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="title_right"><strong>分配权限</strong></div>
+				<div style="width: 900px; margin:auto">
+					<table class="table table-bordered">
+						<?php foreach($menulist as $menu){ ?>
+						<tr>
+							<td width="20%" bgcolor="#f1f1f1">
+								<div style="margin-left: 50px;">
+									<input type="checkbox" name="parentCheckBox" id="parentCheckBox" class="parentCheckBox parent_{$menu['menu_id']}" style="vertical-align:middle; float: left;" value="{$menu['menu_id']}" <?php echo strstr(','. $roleinfo['role_list'].',', ','.$menu['menu_id'].',') ? 'checked="checked"' : ''; ?> />
+									<label style="vertical-align:middle; margin-left: 20px;">{$menu['menu_name']}</label>
+								</div>
+							</td>
+							<td>
+								<?php if(is_array($menu['list'])) foreach($menu['list'] as $mm){ ?>
+								<div class="div_left">
+									<input type="checkbox" name="parentCheckBox" id="parentCheckBox" class="nodeCheckbox nodeCheckbox_{$menu['menu_id']}" parent_id="{$menu['menu_id']}" style="vertical-align:middle; float: left;" value="{$mm['menu_id']}" <?php echo strstr(','. $roleinfo['role_list'].',', ','.$mm['menu_id'].',') ? 'checked="checked"' : ''; ?> />
+									<label style="vertical-align:middle; margin-left: 20px;">{$mm['menu_name']}</label>
+								</div>
+								<?php } ?>
+							</td>
+						</tr>
+						<?php } ?>
+					</table>
+					<table  class="margin-bottom-20 table  no-border" >
+						<tr>
+							<td class="text-center">
+								<input type="button" value="确定" class="btn btn-info roleSubmit" style="width:80px;" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</form>
+		</div>     
+    </div>
+</div>
+<script>
+	$(document).ready(function(){
+		$("input.parentCheckBox").change(function(){
+			var obj = $(this);
+			var	nodeCheckbox = "nodeCheckbox_"+ obj.val();
+			if(obj.is(':checked')){
+				$("input."+ nodeCheckbox).attr('checked', true);
+			}else{
+				$("input."+ nodeCheckbox).attr('checked', false);
+			}
+		});
+		
+		$("input.nodeCheckbox").change(function(){
+			var obj = $(this);
+			var parent_id = obj.attr('parent_id');
+			var	parentCheckbox = "parent_"+ parent_id;
+			
+			if(obj.is(":checked")){
+				$("input."+ parentCheckbox).attr('checked', true);
+			}else{
+				//判断子级是否多个选中
+				if($('input.nodeCheckbox_'+ parent_id +':checked').length > 0){
+					
+				}else{
+					$("input."+ parentCheckbox).attr('checked', false);
+				}
+			}
+		});
+		
+		$(".roleSubmit").on('click', function(){
+			var rolename = $("#rolename").val();
+			var list = '';
+			var roleid = $("#roleid").val() || 0;
+			$("input[name='parentCheckBox']:checked").each(function(){
+				list += list.length > 0 ? ','+ $(this).val() : $(this).val();
+			});
+			
+			if(rolename.length <= 0 || rolename.length > 20){
+				$(".rolelabel").html('* 请输入角色名称，长度为1~20个字之间。');
+				return false;
+			}
+			
+			if(list.length <= 0){
+				$(".rolelabel").html('* 请选择菜单');
+				return false;
+			}
+			
+			$.post("__ACTION__", {rolename: rolename, list: list, roleid: roleid}, function(data){
+				if(data/1){
+					alert('保存成功');
+					location.reload();
+				}else{
+					alert('保存失败');
+				}
+			});
+			
+		});
+		
+		$("a.remove-row").on('click', function(){
+			var obj = $(this);
+			var roleid = obj.attr('roleid');
+			$.post("__ROOT__/home/role/remove",{roleid: roleid}, function(data){
+				if(data/1){
+					alert('删除成功');
+					obj.parent('td').parent('tr').remove();
+				}else{
+					alert('删除失败');
+				}
+			});
+		});
+	});
+</script>
+<include file="Common/footer" />

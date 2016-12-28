@@ -1,0 +1,124 @@
+<include file="Common/header" />
+<!-- 顶部 -->     
+<div id="middle">
+    <include file="Common/menu" />
+    <div class="right" id="mainFrame">
+		<div class="right_cont">
+			<ul class="breadcrumb">当前位置：
+				<a href="javascript:void(0);">首页</a> <span class="divider">/</span>
+				<a href="javascript:void(0);">用户管理</a> <span class="divider">/</span>
+				添加菜单
+			</ul>
+			<div class="title_right"><strong>基本信息</strong></div>
+			<form action="" method="POST" id="addfrom">
+				<div style="width: 900px; margin:auto">
+					<table class="table table-bordered">
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">用户账号：</td>
+							<td>
+								<input type="hidden" name="user_id" id="user_id" value="{$userinfo['user_id']}" />
+								<input type="text" name="username" id="username" class="span1-3" value="{$userinfo['username']}" />
+								<span class="usernameabel"></span>
+							</td>
+						</tr>
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">登录密码：</td>
+							<td>
+								<input type="password" name="password" id="password" class="span1-3" value="{$userinfo['password']}" />
+								<span class="passwordabel"></span>
+							</td>
+						</tr>
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">用户名称：</td>
+							<td>
+								<input type="text" name="nickname" id="nickname" class="span1-3" value="{$userinfo['nickname']}" />
+								<span class="nicknameabel"></span>
+							</td>
+						</tr>
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">用户角色：</td>
+							<td>
+								<select id="role_id" name="role_id" class="span1-3" style="height: 25px; line-height: 25px; padding: 3px 3px;">
+									<option value="0">----</option>
+									<?php foreach($rolelist as $role){ ?>
+										<?php if($userinfo['role_id'] == $role['role_id']){ ?>
+										<option value="{$role['role_id']}" selected>{$role['role_name']}</option>
+										<?php }else{ ?>
+										<option value="{$role['role_id']}">{$role['role_name']}</option>
+										<?php } ?>
+									<?php } ?>
+								</select>
+								<span class="rolelabel"></span>
+							</td>
+						</tr>
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">所属公司：</td>
+							<td>
+								<select id="company_id" name="company_id" class="span1-3" style="height: 25px; line-height: 25px; padding: 3px 3px;">
+									<option value="0">----</option>
+									<?php foreach($companylist as $company){ ?>
+										<?php if($userinfo['company_id'] == $company['company_id']){ ?>
+										<option value="{$company['company_id']}" selected>{$company['company_name']}</option>
+										<?php }else{ ?>
+										<option value="{$company['company_id']}">{$company['company_name']}</option>
+										<?php } ?>
+									<?php } ?>
+								</select>
+								<span class="companyabel"></span>
+							</td>
+						</tr>
+					</table>
+					
+					<table  class="margin-bottom-20 table  no-border" >
+						<tr>
+							<td class="text-center">
+								<input type="button" value="确定" class="btn btn-info roleSubmit" style="width:80px;" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</form>
+		</div>     
+    </div>
+</div>
+<script>
+	$(document).ready(function(){
+		$(".roleSubmit").on('click', function(){
+			var username = $("#username").val();
+			var user_id = $("#user_id").val() || 0;
+			var password = $("#password").val();
+			var nickname = $("#nickname").val();
+			var role_id = $("#role_id").val() || 0;
+			var company_id = $("#company_id").val() || 0;
+			if(username.length <= 0 || username.length > 20){
+				$(".usernameabel").html('* 请输入用户账号，长度为1~20个字之间。');
+				return false;
+			}
+			if(password.length <= 0 || password.length > 50){
+				$(".passwordabel").html('* 请输入用户密码，长度为1~20个字之间。');
+				return false;
+			}
+			if(nickname.length <= 0 || nickname.length > 20){
+				$(".nicknameabel").html('* 请输入用户名称，长度为1~20个字之间。');
+				return false;
+			}
+			if(role_id == 0){
+				$(".rolelabel").html('* 请选择用户角色。');
+				return false;
+			}
+			if(company_id == 0){
+				$(".companyabel").html('* 请选择用户所属公司。');
+				return false;
+			}
+			$.post("__ACTION__", {username: username, password: password, nickname: nickname, role_id: role_id, user_id: user_id, company_id: company_id}, function(data){
+				if(data/1){
+					alert('保存成功');
+					location.reload();
+				}else{
+					alert('保存失败');
+				}
+			});
+		});
+	});
+</script>
+<include file="Common/footer" />

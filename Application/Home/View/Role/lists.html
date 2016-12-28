@@ -1,0 +1,59 @@
+<include file="Common/header" />
+<!-- 顶部 -->     
+<div id="middle">
+    <include file="Common/menu" />
+    <div class="right"  id="mainFrame">
+		<div class="right_cont">
+			<ul class="breadcrumb">当前位置：
+				<a href="javascript:void(0);">首页</a> <span class="divider">/</span>
+				<a href="javascript:void(0);">角色管理</a> <span class="divider">/</span>
+				角色列表
+			</ul>
+			<div class="title_right"><strong>角色列表</strong></div>  
+			<div style="width: 900; margin:auto">
+				<table class="table table-bordered table-hover table-striped" >
+					<tbody>
+						<tr align="center">
+							<td width="100"><strong>编号</strong></td>
+							<td width="200"><strong>角色名称</strong></td>
+							<td width="600" style="word-wrap:break-word;word-break:break-all;"><strong>权限集合</strong></td>
+							<td width="100"><strong>操作</strong></td>
+						</tr>
+						<?php if($rolelist){ foreach($rolelist as $role){ ?>
+						<tr align="center">
+							<td>{$role['role_id']}</td>
+							<td>{$role['role_name']}</td>
+							<td align="left">{$role['role_list']}</td>
+							<td>
+								<a href="index.html?roleid={$role['role_id']}" class="icon-edit"></a> 
+								<a href="javascript:void();" roleid="{$role['role_id']}" class="icon-trash delete"></a>
+							</td>
+						</tr>
+						<?php } }else{ ?>
+						<tr align="center">
+							<td colspan="4">暂无数据...</td>
+						</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			</div>
+		</div>     
+	</div>
+</div>
+<script>
+	$(document).ready(function(){
+		$("a.delete").on('click', function(){
+			var obj = $(this);
+			var roleid = obj.attr('roleid');
+			$.post("remove.html",{roleid: roleid}, function(data){
+				if(data/1){
+					alert('删除成功');
+					obj.parent('td').parent('tr').remove();
+				}else{
+					alert('删除失败');
+				}
+			});
+		});
+	});
+</script>
+<include file="Common/footer" />

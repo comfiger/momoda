@@ -1,0 +1,84 @@
+<include file="Common/header" />
+<!-- 顶部 -->     
+<div id="middle">
+    <include file="Common/menu" />
+    <div class="right" id="mainFrame">
+		<div class="right_cont">
+			<ul class="breadcrumb">当前位置：
+				<a href="javascript:void(0);">首页</a> <span class="divider">/</span>
+				<a href="javascript:void(0);">角色管理</a> <span class="divider">/</span>
+				添加菜单
+			</ul>
+			<div class="title_right"><strong>基本信息</strong></div>
+			<form action="" method="POST" id="addfrom">
+				<div style="width: 900px; margin:auto">
+					<table class="table table-bordered">
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">菜单名称：</td>
+							<td>
+								<input type="hidden" name="roleid" id="roleid" value="{$menuinfo['menu_id']}" />
+								<input type="text" name="menu_name" id="menu_name" class="span1-3" value="{$menuinfo['menu_name']}" />
+								<span class="rolelabel"></span>
+							</td>
+						</tr>
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">父级菜单：</td>
+							<td>
+								<select id="parent_id" name="parent_id" class="span1-3" style="height: 25px; line-height: 25px; padding: 3px 3px;">
+									<option value="0">一级菜单</option>
+									<?php foreach($menulist as $list){ ?>
+										<?php if($menuinfo['parent_id'] == $list['menu_id']){ ?>
+										<option value="{$list['menu_id']}" selected>{$list['menu_name']}</option>
+										<?php }else{ ?>
+										<option value="{$list['menu_id']}">{$list['menu_name']}</option>
+										<?php } ?>
+									<?php } ?>
+								</select>
+								<span class="rolelabel"></span>
+							</td>
+						</tr>
+						<tr>
+							<td width="20%" align="right" bgcolor="#f1f1f1">跳转地址：</td>
+							<td>
+								<input type="text" name="action" id="action" class="span1-3" value="{$menuinfo['action']}" />
+								<span class="rolelabel"></span>
+							</td>
+						</tr>
+					</table>
+					
+					<table  class="margin-bottom-20 table  no-border" >
+						<tr>
+							<td class="text-center">
+								<input type="button" value="确定" class="btn btn-info roleSubmit" style="width:80px;" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</form>
+		</div>     
+    </div>
+</div>
+<script>
+	$(document).ready(function(){
+		$(".roleSubmit").on('click', function(){
+			var rolename = $("#menu_name").val();
+			var roleid = $("#roleid").val() || 0;
+			if(rolename.length <= 0 || rolename.length > 20){
+				$(".rolelabel").html('* 请输入角色名称，长度为1~20个字之间。');
+				return false;
+			}
+			var parent_id = $("#parent_id").val();
+			var action = $("#action").val();
+			
+			$.post("__ACTION__", {rolename: rolename, parent_id: parent_id, roleid: roleid, action: action}, function(data){
+				if(data/1){
+					alert('保存成功');
+					location.reload();
+				}else{
+					alert('保存失败');
+				}
+			});
+		});
+	});
+</script>
+<include file="Common/footer" />

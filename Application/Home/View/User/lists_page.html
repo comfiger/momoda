@@ -1,0 +1,50 @@
+<table class="table table-bordered table-hover table-striped">
+	<tbody>
+		<tr align="center">
+			<td width="10%"><strong>编号</strong></td>
+			<td width="20%"><strong>用户账号</strong></td>
+			<td width="20%"><strong>用户昵称</strong></td>
+			<td width="20%"><strong>所属角色</strong></td>
+			<td width="20%"><strong>所属公司</strong></td>
+			<td width="10%"><strong>操作</strong></td>
+		</tr>
+		<?php if($userlist){ foreach($userlist as $user){ ?>
+		<tr align="center">
+			<td>{$user['user_id']}</td>
+			<td>{$user['username']}</td>
+			<td>{$user['nickname']}</td>
+			<td>{$user['role_name']}</td>
+			<td>{$user['company_name']}</td>
+			<td>
+				<a href="index.html?user_id={$user['user_id']}" class="icon-edit"></a> 
+				<a href="javascript:void(0);" user_id="{$user['user_id']}" class="icon-trash delete"></a>
+			</td>
+		</tr>
+		<?php } }else{ ?>
+		<tr align="center">
+			<td colspan="4">暂无数据...</td>
+		</tr>
+		<?php } ?>
+	</tbody>
+</table>
+<div class="pagination" style="float: right; widht: 95%">
+	<include file="Common/page" />
+</div>
+<script>
+	$(document).ready(function(){
+		$("a.delete").on('click', function(){
+			if (confirm("确认删除？") == true){
+				var obj = $(this);
+				var user_id = obj.attr('user_id');
+				$.post("remove.html",{user_id: user_id}, function(data){
+					if(data/1){
+						alert('删除成功');
+						obj.parent('td').parent('tr').remove();
+					}else{
+						alert('删除失败');
+					}
+				});
+			}
+		});
+	});
+</script>

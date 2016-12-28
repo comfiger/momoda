@@ -1,0 +1,1 @@
+s:348:"<div style="margin-top: 30px;" ><span>物流设备管理 </span><a href="/admin/e6/e6/index.html">设备列表</a></div><div class="collapsed"><span>物流用户管理</span><a href="/admin/e6/department/lists.html">部门管理</a><a href="/admin/e6/position/lists.html">职位管理</a><a href="/admin/e6/member/lists.html">用户管理</a></div>";

@@ -1,0 +1,101 @@
+<include file="Common/header" />
+<!-- 顶部 -->     
+<div id="middle">
+    <include file="Common/menu" />
+    <div class="right"  id="mainFrame">
+		<div class="right_cont">
+			<ul class="breadcrumb">当前位置：
+				<a href="javascript:void(0);">首页</a> <span class="divider">/</span>
+				<a href="javascript:void(0);">角色管理</a> <span class="divider">/</span>
+				菜单列表
+			</ul>
+			<div class="title_right"><strong>菜单列表</strong></div>  
+			<div style="width: 900px; margin:auto">
+				<table class="table table-bordered table-hover table-striped">
+					<tbody>
+						<tr align="center">
+							<td width="10%"><strong>编号</strong></td>
+							<td width="20%"><strong>菜单名称</strong></td>
+							<td><strong>跳转地址</strong></td>
+							<td width="10%"><strong>状态</strong></td>
+							<td width="20%"><strong>操作</strong></td>
+						</tr>
+						<?php if($list){ foreach($list as $ls){ ?>
+							<tr align="center">
+								<td>{$ls['menu_id']}</td>
+								<td align="left">{$ls['menu_name']}</td>
+								<td align="left">{$ls['action']}</td>
+								<td>
+									<a href="javascript:void(0);" roleid="{$ls['menu_id']}" class="edit <?php echo $ls['visible'] ? 'icon-ok' : 'icon-remove'; ?>" visible="{$ls['visible']}"></a> 
+								</td>
+								<td>
+									<a href="index.html?roleid={$ls['menu_id']}" class="icon-edit" title="编辑"></a>
+									<a href="javascript:void(0);" roleid="{$ls['menu_id']}" class="delete icon-trash" title="删除"></a>
+								</td>
+							</tr>
+							<?php if($ls['list']) foreach($ls['list'] as $lss){ ?>
+								<tr align="center">
+									<td>{$lss['menu_id']}</td>
+									<td align="left">　　-- {$lss['menu_name']}</td>
+									<td align="left">{$lss['action']}</td>
+									<td>
+										<a href="javascript:void(0);" roleid="{$lss['menu_id']}" class="edit <?php echo $lss['visible'] ? 'icon-ok' : 'icon-remove'; ?>" visible="{$lss['visible']}"></a> 
+									</td>
+									<td>
+										<a href="index.html?roleid={$lss['menu_id']}" class="icon-edit" title="编辑"></a>
+										<a href="javascript:void(0);" roleid="{$lss['menu_id']}" class="delete icon-trash" title="删除"></a>
+									</td>
+								</tr>
+							<?php } ?>
+						<?php } }else{ ?>
+						<tr align="center">
+							<td colspan="4">暂无数据...</td>
+						</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			</div>
+		</div>     
+	</div>
+</div>
+<script>
+	$(document).ready(function(){
+		$("a.delete").on('click', function(){
+			var obj = $(this);
+			var roleid = obj.attr('roleid');
+			$.post("remove.html",{roleid: roleid, type: 0}, function(data){
+				if(data/1){
+					alert('删除成功');
+					obj.parent('td').parent('tr').remove();
+				}else{
+					alert('删除失败');
+				}
+			});
+		});
+		
+		$("a.edit").on('click', function(){
+			var obj = $(this);
+			var roleid = obj.attr('roleid');
+			var old = obj.attr('visible')/1;
+			if(old){
+				var visible = 0;
+				var oldclass = 'icon-ok';
+				var classname = 'icon-remove';
+			}else{
+				var visible = 1;
+				var oldclass = 'icon-remove';
+				var classname = 'icon-ok';
+			}
+			
+			$.post("remove.html",{roleid: roleid, type: 1, visible: visible}, function(data){
+				if(data/1){
+					obj.attr('visible', visible);
+					obj.removeClass(oldclass).addClass(classname);
+				}else{
+					alert('失败');
+				}
+			});
+		});
+	});
+</script>
+<include file="Common/footer" />
